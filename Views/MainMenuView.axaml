@@ -1,0 +1,17 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:GoblinApp.ViewModels"
+             x:Class="GoblinApp.Views.MainMenuView"
+             x:DataType="vm:MainMenuViewModel">
+
+    <Design.DataContext>
+        <vm:MainMenuViewModel />
+    </Design.DataContext>
+
+    <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center" Spacing="20">
+        <TextBlock Text="{Binding Title}" FontSize="40" FontWeight="Bold" HorizontalAlignment="Center" />
+        <Button Content="Play" Command="{Binding PlayCommand}" HorizontalAlignment="Stretch" />
+        <Button Content="Exit" Command="{Binding ExitCommand}" HorizontalAlignment="Stretch" />
+    </StackPanel>
+
+</UserControl>

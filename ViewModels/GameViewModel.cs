@@ -1,49 +1,58 @@
 using System.Collections.ObjectModel;
 using CommunityToolkit.Mvvm.Input;
 using GoblinApp.Models;
+using GoblinApp.Services;
 
 namespace GoblinApp.ViewModels;
 
 public partial class GameViewModel : ViewModelBase
 {
-    private Goblin _goblin;
+    private readonly List<Goblin> _goblins;
+    private readonly Action _onExitToMenu;
 
     public ObservableCollection<CellViewModel> Cells { get; } = new();
+    public int Columns { get; }
 
-    public GameViewModel()
+    public GameViewModel() : this(onExitToMenu: () => { })
     {
-        var f1 = new Field();
-        var f2 = new Field();
-        var f3 = new Field();
-        var f4 = new Field();
+        
+    }
 
-        f1.SetNeighbor(Direction.Right, f2);
-        f2.SetNeighbor(Direction.Left, f1);
-        f2.SetNeighbor(Direction.Right, f3);
-        f3.SetNeighbor(Direction.Left, f2);
-        f3.SetNeighbor(Direction.Right, f4);
-        f4.SetNeighbor(Direction.Left, f3);
+    public GameViewModel(Action onExitToMenu)
+    {
+        _onExitToMenu = onExitToMenu;
 
-        _goblin = new Goblin("Bilbo", strength: 1);
-        var boulder = new Boulder();
+        var mapPath = Path.Combine(AppContext.BaseDirectory, "Maps", "level1.txt");
+        var map = MapLoader.LoadFromFile(mapPath);
 
-        f1.Enter(_goblin);
-        f2.Enter(boulder);
+        Columns = map.Width;
+        _goblins = map.Goblins;
 
-        Cells.Add(new CellViewModel(f1));
-        Cells.Add(new CellViewModel(f2));
-        Cells.Add(new CellViewModel(f3));
-        Cells.Add(new CellViewModel(f4));
+        for (var y = 0; y < map.Height; y++)
+        {
+            for (var x = 0; x < map.Width; x++)
+            {
+                Cells.Add(new CellViewModel(map.Fields[y, x]));
+            }
+        }
     }
 
     [RelayCommand]
     private void Move(Direction direction)
     {
-        _goblin.Step(direction);
+        if (_goblins.Count == 0) { return; }
+
+        _goblins[0].Step(direction);
 
         foreach (var cell in Cells)
         {
             cell.Refresh();
         }
+    }
+
+    [RelayCommand]
+    private void ExitToMenu()
+    {
+        _onExitToMenu();
     }
 }

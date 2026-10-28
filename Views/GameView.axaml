@@ -1,0 +1,60 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:GoblinApp.ViewModels"
+             xmlns:m="using:GoblinApp.Models"
+             x:Class="GoblinApp.Views.GameView"
+             x:DataType="vm:GameViewModel">
+
+    <Design.DataContext>
+        <vm:GameViewModel />
+    </Design.DataContext>
+
+    <StackPanel Margin="20" Spacing="20">
+
+        <ItemsControl ItemsSource="{Binding Cells}">
+            <ItemsControl.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <UniformGrid Columns="{Binding Columns}" />
+                </ItemsPanelTemplate>
+            </ItemsControl.ItemsPanel>
+            <ItemsControl.ItemTemplate>
+                <DataTemplate x:DataType="vm:CellViewModel">
+                    <Border BorderBrush="Black"
+                            BorderThickness="1"
+                            Background="LightGray"
+                            Width="40" Height="40"
+                            >
+                        <TextBlock Text="{Binding Display}"
+                                   FontSize="18"
+                                   FontWeight="Bold"
+                                   Foreground="Black"
+                                   HorizontalAlignment="Center"
+                                   VerticalAlignment="Center" />
+                    </Border>
+                </DataTemplate>
+            </ItemsControl.ItemTemplate>
+        </ItemsControl>
+
+        <StackPanel HorizontalAlignment="Center" Spacing="5">
+            <Button Content="↑ Up" HorizontalAlignment="Center"
+                    Command="{Binding MoveCommand}"
+                    CommandParameter="{x:Static m:Direction.Up}" />
+            <StackPanel Orientation="Horizontal" Spacing="5" HorizontalAlignment="Center">
+                <Button Content="← Left"
+                        Command="{Binding MoveCommand}"
+                        CommandParameter="{x:Static m:Direction.Left}" />
+                <Button Content="Right →"
+                        Command="{Binding MoveCommand}"
+                        CommandParameter="{x:Static m:Direction.Right}" />
+            </StackPanel>
+            <Button Content="↓ Down" HorizontalAlignment="Center"
+                    Command="{Binding MoveCommand}"
+                    CommandParameter="{x:Static m:Direction.Down}" />
+        </StackPanel>
+
+        <Button Content="Exit to Menu" HorizontalAlignment="Center"
+                Command="{Binding ExitToMenuCommand}" />
+
+    </StackPanel>
+
+</UserControl>
